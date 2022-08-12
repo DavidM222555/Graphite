@@ -125,6 +125,50 @@ public class Tests
         Assert.AreEqual(1, countOfProp2InNode1);
         Assert.AreEqual(1, countOfProp1InNode2);
         Assert.AreEqual(1, countOfProp2InNode2);
-
     }
+
+    [Test]
+    public void GetNodesWithProperty()
+    {
+        var testGraph = new Graph();
+        testGraph.AddNodeFromString("TestNode1");
+        testGraph.AddNodeFromString("TestNode2");
+        testGraph.AddNodeFromString("TestNode3");
+        
+        testGraph.AddPropertyToNode("TestNode1", "TestProp");
+        testGraph.AddPropertyToNode("TestNode2", "TestProp");
+
+        var nodesWithProp = testGraph.GetNodesWithProperty("TestProp");
+
+        var countOfTestPropInNode1 = nodesWithProp.Count(s => s == "TestNode1");
+        var countOfTestPropInNode2 = nodesWithProp.Count(s => s == "TestNode2");
+
+        Assert.AreEqual(1, countOfTestPropInNode1);
+        Assert.AreEqual(1, countOfTestPropInNode2);
+    }
+
+    [Test]
+    public void GetNeighborNodesByRelation()
+    {
+        var testGraph = new Graph();
+        testGraph.AddNodeFromString("TestNode1");
+        testGraph.AddNodeFromString("TestNode2");
+        testGraph.AddNodeFromString("TestNode3");
+        
+        testGraph.AddDirectedRelation("TestNode1", "TestNode2", "Connected");
+        testGraph.AddDirectedRelation("TestNode1", "TestNode1", "Connected");
+
+        // Test to make sure we don't get nodes related along a different relation
+        testGraph.AddDirectedRelation("TestNode1", "TestNode3", "Knows");
+
+        var nodesRelatedByConnection = testGraph.GetRelatedNodes("TestNode1", "Connected");
+        
+        var isNode1Related = nodesRelatedByConnection.Count(s => s == "TestNode1");
+        var isNode2Related = nodesRelatedByConnection.Count(s => s == "TestNode2");
+        
+        Assert.AreEqual(1, isNode1Related);
+        Assert.AreEqual(1, isNode2Related);
+        Assert.AreEqual(2, nodesRelatedByConnection.Count);
+    }    
+    
 }

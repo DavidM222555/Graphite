@@ -63,7 +63,23 @@ public class Graph
         var startingNode = StringToNode[startingNodeName];
         var endingNode = StringToNode[endingNodeName];
         
-        startingNode.AddRelationToEdge(endingNode, new UserDefinedRelation(relationName));
+        startingNode.AddRelationToEdge(endingNode, relationName);
+    }
+
+    /// <summary>
+    /// Gets all nodes related to the calling node by relationToTest
+    /// </summary>
+    /// <param name="startingNode"></param>
+    /// <param name="relationToTest">Relation property to test</param>
+    /// <returns>A list of nodes related by relationToTest to startingNode</returns>
+    public List<string> GetRelatedNodes(string startingNode, string relationToTest)
+    {
+        if (StringToNode[startingNode].RelationToNodes.ContainsKey(relationToTest))
+        {
+            return StringToNode[startingNode].RelationToNodes[relationToTest].Select(node => node.NodeName).ToList();
+        }
+
+        return new List<string>();
     }
 
     /// <summary>
@@ -137,7 +153,7 @@ public class Graph
             {
                 foreach (var relation in entry.Value)
                 {
-                    Console.Write(relation.RelationName + " to " + entry.Key.NodeName + " \n");
+                    Console.Write(relation + " to " + entry.Key.NodeName + " \n");
                 }
             }
         }
@@ -146,6 +162,16 @@ public class Graph
     public List<string> GetPropertiesOfNode(string nodeName)
     {
         return StringToNode[nodeName].UserDefinedProperties.ToList();
+    }
+
+    /// <summary>
+    /// Retrieves all the nodes in the graph with a given property name
+    /// </summary>
+    /// <param name="propertyName"></param>
+    /// <returns>A list of nodes with a given property</returns>
+    public List<string> GetNodesWithProperty(string propertyName)
+    {
+        return (from node in NodesInGraph where node.UserDefinedProperties.Contains(propertyName) select node.NodeName).ToList();
     }
     
 }

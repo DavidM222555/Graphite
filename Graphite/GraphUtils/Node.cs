@@ -3,15 +3,16 @@
 public class Node
 {
     public string NodeName { get; set; }
-    
     public HashSet<string> UserDefinedProperties { get; }
-    public Dictionary<Node, List<UserDefinedRelation>> EdgeTable { get; }
-    
+    public Dictionary<Node, List<string>> EdgeTable { get; }
+    public Dictionary<string, List<Node>> RelationToNodes { get; }
+
     public Node(string nodeName)
     {
         NodeName = nodeName;
         UserDefinedProperties = new HashSet<string>();
-        EdgeTable = new Dictionary<Node, List<UserDefinedRelation>>();
+        EdgeTable = new Dictionary<Node, List<string>>();
+        RelationToNodes = new Dictionary<string, List<Node>>();
     }
 
     public void AddUserDefinedProperty(string newProperty)
@@ -19,33 +20,39 @@ public class Node
         UserDefinedProperties.Add(newProperty);
     }
 
-    public void CreateEdge(Node outgoingNode)
+    public List<string> GetRelationsBetweenNodes(Node outgoingNode)
     {
-        if (!EdgeTable.ContainsKey(outgoingNode))
+        return EdgeTable.ContainsKey(outgoingNode) ? EdgeTable[outgoingNode] : new List<string>();
+    }
+
+    public void AddRelationToEdge(Node outgoingNode, string relationToAdd)
+    {
+        Console.WriteLine("Adding relation " + relationToAdd);
+        
+        // Begin by testing whether or not the relations to nodes dictionary has a list for
+        // the relation under consideration
+        if (!RelationToNodes.ContainsKey(relationToAdd))
         {
-            EdgeTable.Add(outgoingNode, new List<UserDefinedRelation>());
+            RelationToNodes.Add(relationToAdd, new List<Node>{outgoingNode});
         }
-    }
-
-    public List<UserDefinedRelation> GetRelationsBetweenNodes(Node outgoingNode)
-    {
-        return EdgeTable.ContainsKey(outgoingNode) ? EdgeTable[outgoingNode] : new List<UserDefinedRelation>();
-    }
-
-    public void AddRelationToEdge(Node outgoingNode, UserDefinedRelation relationToAdd)
-    {
+        else
+        {
+            RelationToNodes[relationToAdd].Add(outgoingNode);
+        }
+        
         // If we don't have a list of user defined relations for an outgoing node
         // yet then we create a new list for it
         if (!EdgeTable.ContainsKey(outgoingNode))
         {
-            EdgeTable.Add(outgoingNode, new List<UserDefinedRelation>());
+            EdgeTable.Add(outgoingNode, new List<string>());
             var relations = GetRelationsBetweenNodes(outgoingNode);
             relations.Add(relationToAdd);
 
             return;
         }
-        
+
         EdgeTable[outgoingNode].Add(relationToAdd);
     }
+    
     
 }

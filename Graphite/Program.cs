@@ -6,28 +6,15 @@ graphTest.AddNodeFromString("Node2");
 graphTest.AddNodeFromString("Node3");
 
 graphTest.AddDirectedRelation("Node1", "Node2", "Connected");
-graphTest.AddDirectedRelation("Node2", "Node3", "Connected");
-graphTest.AddDirectedRelation("Node3", "Node1", "Connected");
 graphTest.AddDirectedRelation("Node1", "Node1", "Connected");
-graphTest.AddDirectedRelation("Node1", "Node1", "Knows");
 
 graphTest.AddPropertyToNode("Node1", "Smart");
 
-var properties = new List<string>
+var relatedNodes = graphTest.GetRelatedNodes("Node1","Connected");
+
+foreach (var relatedNode in relatedNodes) 
 {
-    "Prop1",
-    "Prop2",
-    "Prop3"
-};
-
-graphTest.AddPropertyToNode("Node1", "Smart");
-// graphTest.AddPropertiesToNode("Node1", properties);
-
-var propsForNode = graphTest.GetPropertiesOfNode("Node1");
-
-foreach (var prop in propsForNode)
-{
-    Console.WriteLine(prop);
+    Console.WriteLine(relatedNode);
 }
 
 // graphTest.DisplayAllNodesAndRelations();
