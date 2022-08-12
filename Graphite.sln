@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Graphite", "Graphite\Graphite.csproj", "{773E527A-6CAD-4637-A883-2D305F1AD371}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphiteUnitTests", "GraphiteUnitTests\GraphiteUnitTests.csproj", "{F38AB2B7-971A-4CE0-AD9C-0300D476756C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{773E527A-6CAD-4637-A883-2D305F1AD371}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{773E527A-6CAD-4637-A883-2D305F1AD371}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{773E527A-6CAD-4637-A883-2D305F1AD371}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{773E527A-6CAD-4637-A883-2D305F1AD371}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F38AB2B7-971A-4CE0-AD9C-0300D476756C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F38AB2B7-971A-4CE0-AD9C-0300D476756C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F38AB2B7-971A-4CE0-AD9C-0300D476756C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F38AB2B7-971A-4CE0-AD9C-0300D476756C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
