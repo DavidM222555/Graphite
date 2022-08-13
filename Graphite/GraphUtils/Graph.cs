@@ -189,5 +189,26 @@ public class Graph
     {
         return (from node in NodesInGraph where node.UserDefinedProperties.Contains(propertyName) select node.NodeName).ToList();
     }
-    
+
+    /// <summary>
+    /// Gets nodes that satisfy all of the given properties in the list.
+    /// </summary>
+    /// <param name="properties"></param>
+    /// <returns>A list of nodes that satisfy the given properties</returns>
+    public List<string> GetNodesWithProperties(List<string> properties)
+    {
+        // Initialize the list with nodes that satisfy the first property -- from here 
+        // we cull the list of nodes that don't have the given properties
+        var nodesWithProperties = GetNodesWithProperty(properties[0]);
+
+        for (var i = 1; i < properties.Count; i++)
+        {
+            var currentProp = properties[i];
+            var nodesWithProperty = GetNodesWithProperty(currentProp).ToHashSet();
+            
+            nodesWithProperties.RemoveAll(s => !nodesWithProperty.Contains(s));
+        }
+        
+        return nodesWithProperties;
+    }
 }

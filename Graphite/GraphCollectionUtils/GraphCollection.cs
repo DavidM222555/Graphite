@@ -108,6 +108,11 @@ public class GraphCollection
         return graphCollection;
     }
 
+    /// <summary>
+    /// Writes a graph to a file with the proper encoding discussed in the FromFile construction.
+    /// </summary>
+    /// <param name="graphToWrite"></param>
+    /// <param name="filePath"></param>
     public static void WriteGraphToFile(Graph graphToWrite, string filePath)
     {
         using var outputFile = new StreamWriter(filePath, false);
@@ -146,7 +151,13 @@ public class GraphCollection
         }
         
         outputFile.WriteLine("#RelationDefEnd");
+    }
 
+    public void AddGraphToCollectionByName(string graphName)
+    {
+        var newGraph = new Graph("graphName");
+
+        NameToGraph[graphName] = newGraph;
     }
     
 }

@@ -196,6 +196,30 @@ public class Tests
     }
 
     [Test]
+    public void GetNodesWithProperties()
+    {
+        var graph = new Graph("TestGraph");
+        graph.AddNodeFromString("TestNode1");
+        graph.AddNodeFromString("TestNode2");
+
+        graph.AddPropertyToNode("TestNode1", "TestProp1");
+        graph.AddPropertyToNode("TestNode1", "TestProp2");
+        
+        graph.AddPropertyToNode("TestNode2", "TestProp1");
+        
+        var propertiesToTest = new List<string>
+        {
+            "TestProp1",
+            "TestProp2"
+        };
+
+        var nodesWithProperties = graph.GetNodesWithProperties(propertiesToTest);
+        
+        Assert.AreEqual(1, nodesWithProperties.Count);
+        Assert.AreEqual("TestNode1", nodesWithProperties[0]);
+    }
+    
+    [Test]
     public void SingleGraphFileWriteAndRead()
     {
         // Tests if we can successfully write a single graph to a file and retrieve it correctly
