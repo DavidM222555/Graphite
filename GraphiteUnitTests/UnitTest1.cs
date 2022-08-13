@@ -204,7 +204,7 @@ public class Tests
         testGraph.AddNodeFromString("TestNode2");
         testGraph.AddDirectedRelation("TestNode1", "TestNode2", "Connected");
 
-        var path = Directory.GetCurrentDirectory() + "./TestFile.txt";
+        const string path = "TestFile.txt";
         
         GraphCollection.WriteGraphToFile(testGraph, path);
 
