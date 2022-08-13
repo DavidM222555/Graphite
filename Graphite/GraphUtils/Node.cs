@@ -27,8 +27,6 @@ public class Node
 
     public void AddRelationToEdge(Node outgoingNode, string relationToAdd)
     {
-        Console.WriteLine("Adding relation " + relationToAdd);
-        
         // Begin by testing whether or not the relations to nodes dictionary has a list for
         // the relation under consideration
         if (!RelationToNodes.ContainsKey(relationToAdd))
@@ -53,6 +51,5 @@ public class Node
 
         EdgeTable[outgoingNode].Add(relationToAdd);
     }
-    
     
 }

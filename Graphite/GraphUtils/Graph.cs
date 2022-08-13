@@ -4,11 +4,13 @@ public class Graph
 {
     public List<Node> NodesInGraph { get; }
     public Dictionary<string, Node> StringToNode { get; }
-
-    public Graph()
+    public string GraphName { get; }
+    
+    public Graph(string graphName)
     {
         NodesInGraph = new List<Node>();
         StringToNode = new Dictionary<string, Node>();
+        GraphName = graphName;
     }
 
     /// <summary>
@@ -64,6 +66,20 @@ public class Graph
         var endingNode = StringToNode[endingNodeName];
         
         startingNode.AddRelationToEdge(endingNode, relationName);
+    }
+
+    /// <summary>
+    /// Add a bidirectional relation between two nodes. For instance, if you want to simplify the process
+    /// of adding a 'knows' relation that both nodes have with one another you can use this method instead of
+    /// the unidirectional AddDirectedEdge method.
+    /// </summary>
+    /// <param name="startingNodeName"></param>
+    /// <param name="endingNodeName"></param>
+    /// <param name="relationName"></param>
+    public void AddBidirectionalEdge(string startingNodeName, string endingNodeName, string relationName)
+    {
+        AddDirectedRelation(startingNodeName, endingNodeName, relationName);
+        AddDirectedRelation(endingNodeName, startingNodeName, relationName);
     }
 
     /// <summary>
@@ -149,11 +165,11 @@ public class Graph
         {
             Console.Write(node.NodeName + " has the relations: \n");
             
-            foreach (var entry in node.EdgeTable)
+            foreach (var (key, value) in node.EdgeTable)
             {
-                foreach (var relation in entry.Value)
+                foreach (var relation in value)
                 {
-                    Console.Write(relation + " to " + entry.Key.NodeName + " \n");
+                    Console.Write(relation + " to " + key.NodeName + " \n");
                 }
             }
         }

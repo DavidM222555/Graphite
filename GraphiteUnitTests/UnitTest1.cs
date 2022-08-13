@@ -1,5 +1,9 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using Graphite.GraphCollectionUtils;
 using Graphite.GraphUtils;
 using NUnit.Framework;
 
@@ -10,7 +14,7 @@ public class Tests
     [Test]
     public void AddNodeToGraphStringDict()
     {
-        var testGraph = new Graph();
+        var testGraph = new Graph("TestGraph");
         testGraph.AddNodeFromString("TestNode");
         
         Assert.AreEqual(testGraph.StringToNode.ContainsKey("TestNode"), true);
@@ -19,7 +23,7 @@ public class Tests
     [Test]
     public void AddNodeToList()
     {
-        var testGraph = new Graph();
+        var testGraph = new Graph("TestGraph");
         testGraph.AddNodeFromString("TestNode");
 
         var nodeToFind = testGraph.StringToNode["TestNode"];
@@ -30,7 +34,7 @@ public class Tests
     [Test]
     public void PropertyTest()
     {
-        var testGraph = new Graph();
+        var testGraph = new Graph("TestGraph");
         testGraph.AddNodeFromString("TestNode");
         testGraph.AddPropertyToNode("TestNode", "TestProp");
         
@@ -40,7 +44,7 @@ public class Tests
     [Test]
     public void PropertyUniqueTest()
     {
-        var testGraph = new Graph();
+        var testGraph = new Graph("TestGraph");
         testGraph.AddNodeFromString("TestNode");
         testGraph.AddPropertyToNode("TestNode", "TestProp");
         testGraph.AddPropertyToNode("TestNode", "TestProp");
@@ -52,7 +56,7 @@ public class Tests
     [Test]
     public void AddPropertiesToNodeTest()
     {
-        var testGraph = new Graph();
+        var testGraph = new Graph("TestGraph");
         testGraph.AddNodeFromString("TestNode");
 
         var propsToAdd = new List<string>
@@ -76,7 +80,7 @@ public class Tests
     [Test]
     public void AddPropertyToMultipleNodes()
     {
-        var testGraph = new Graph();
+        var testGraph = new Graph("TestGraph");
         testGraph.AddNodeFromString("TestNode1");
         testGraph.AddNodeFromString("TestNode2");
 
@@ -98,7 +102,7 @@ public class Tests
     [Test]
     public void AddPropertiesToNodes()
     {
-        var testGraph = new Graph();
+        var testGraph = new Graph("TestGraph");
         testGraph.AddNodeFromString("TestNode1");
         testGraph.AddNodeFromString("TestNode2");
         
@@ -130,7 +134,7 @@ public class Tests
     [Test]
     public void GetNodesWithProperty()
     {
-        var testGraph = new Graph();
+        var testGraph = new Graph("TestGraph");
         testGraph.AddNodeFromString("TestNode1");
         testGraph.AddNodeFromString("TestNode2");
         testGraph.AddNodeFromString("TestNode3");
@@ -150,7 +154,7 @@ public class Tests
     [Test]
     public void GetNeighborNodesByRelation()
     {
-        var testGraph = new Graph();
+        var testGraph = new Graph("TestGraph");
         testGraph.AddNodeFromString("TestNode1");
         testGraph.AddNodeFromString("TestNode2");
         testGraph.AddNodeFromString("TestNode3");
@@ -169,6 +173,52 @@ public class Tests
         Assert.AreEqual(1, isNode1Related);
         Assert.AreEqual(1, isNode2Related);
         Assert.AreEqual(2, nodesRelatedByConnection.Count);
-    }    
+    }
+
+    [Test]
+    public void BidirectionalRelation()
+    {
+        var testGraph = new Graph("TestGraph");
+        testGraph.AddNodeFromString("TestNode1");
+        testGraph.AddNodeFromString("TestNode2");
+        testGraph.AddNodeFromString("TestNode3");
+        
+        testGraph.AddBidirectionalEdge("TestNode1", "TestNode2", "Connected");
+
+        var nodesRelatedToTestNode1 = testGraph.GetRelatedNodes("TestNode1", "Connected");
+        var nodesRelatedToTestNode2 = testGraph.GetRelatedNodes("TestNode2", "Connected");
+        
+        var isNode1Related = nodesRelatedToTestNode1.Count(s => s == "TestNode2");
+        var isNode2Related = nodesRelatedToTestNode2.Count(s => s == "TestNode1");
+        
+        Assert.AreEqual(1, isNode1Related);
+        Assert.AreEqual(1, isNode2Related);
+    }
+
+    [Test]
+    public void SingleGraphFileWriteAndRead()
+    {
+        // Tests if we can successfully write a single graph to a file and retrieve it correctly
+        var testGraph = new Graph("TestGraph");
+        testGraph.AddNodeFromString("TestNode1");
+        testGraph.AddNodeFromString("TestNode2");
+        testGraph.AddDirectedRelation("TestNode1", "TestNode2", "Connected");
+
+        var path = Directory.GetCurrentDirectory() + "./TestFile.txt";
+        
+        GraphCollection.WriteGraphToFile(testGraph, path);
+
+        var testGraphCollectionFromRead = GraphCollection.FromFile(path);
+        var testGraphFromRead = testGraphCollectionFromRead.NameToGraph["TestGraph"];
+        
+        Assert.True(testGraphFromRead.GraphName == testGraph.GraphName);
+        
+        // Basic first test is to make sure that all the nodes are contained in this graph
+        foreach (var node in testGraph.NodesInGraph)
+        {
+            Assert.True(testGraphFromRead.NodesInGraph.Exists(s => s.NodeName == node.NodeName));
+        }
+        
+    }
     
 }
