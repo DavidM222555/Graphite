@@ -13,19 +13,21 @@ public static class CommandHandler
         
         var commandWords = command.Split(" ");
 
-        switch (commandWords[0])
+        switch (commandWords[0].ToUpper())
         {
-            // Command of the form: CREATE <graphName>
             case "CREATE":
                 if (commandWords.Length < 2)
                 {
                     throw new InvalidDataException("Invalid command length. Should have length 2.");
                 }
 
-                var graphNameToAdd = commandWords[1];
-                CreateGraphInCollection(graphNameToAdd, graphCollection);
-                
-                Console.WriteLine("Graph " + graphNameToAdd + " successfully added.");
+                var graphNamesToAdd = commandWords[1].Split(",");
+
+                foreach (var graphNameToAdd in graphNamesToAdd)
+                {
+                    CreateGraphInCollection(graphNameToAdd, graphCollection);
+                    Console.WriteLine("Graph " + graphNameToAdd + " successfully added.");
+                }
                 
                 break;
             
@@ -41,6 +43,18 @@ public static class CommandHandler
                 AddNodeToGraph(graphCollection, graphNameToAddTo, nodeNameToAdd);
                 
                 break;
+            
+            case "GIVE":
+                var listOfNodes = commandWords[1].Split(",").ToList();
+                var listOfProps = commandWords[3].Split(",").ToList();
+                var graphNameToGivePropsTo = commandWords[5];
+
+                var graphToGivePropsTo = graphCollection.NameToGraph[graphNameToGivePropsTo];
+                
+                graphToGivePropsTo.AddPropertiesToNodes(listOfNodes, listOfProps);
+                
+                break;
+                
             case "RELATE":
                 if (command.Length < 8)
                 {
@@ -54,13 +68,14 @@ public static class CommandHandler
                 
                 AddRelationToGraph(graphCollection, graphName, startNode, endNode, relationName);
                 break;
-                
+
             case "GET":
-                var properties = commandWords[3].Split(",");
+                var properties = commandWords[4].Split(",").ToList();
+                var graphNameToGetFrom = commandWords[6];
                 
-
+                GetNodesWithPropertiesAndRelations(graphCollection, graphNameToGetFrom, properties);
+                
                 break;
-
         }
     }
 
@@ -69,6 +84,8 @@ public static class CommandHandler
         // If the graph collection already contains the given name we just return
         if (graphCollection.NameToGraph.ContainsKey(graphName))
         {
+            Console.WriteLine(graphName + " is already contained in the graph collection");
+            
             return;
         }    
         
@@ -79,6 +96,7 @@ public static class CommandHandler
     {
         if (!graphCollection.NameToGraph.ContainsKey(graphName))
         {
+            Console.WriteLine("Unable to add node to graph because " + graphName + " hasn't been created.");
             
             return;
         }
@@ -91,19 +109,43 @@ public static class CommandHandler
     private static void AddRelationToGraph(GraphCollection graphCollection, string graphName, string startNodeName,
         string endNodeName, string relationName)
     {
-        var graphToAddTo = graphCollection.NameToGraph[graphName];
-        
-        if (!graphToAddTo.StringToNode.ContainsKey(startNodeName) || !graphToAddTo.StringToNode.ContainsKey(endNodeName))
+        if (!graphCollection.NameToGraph.ContainsKey(graphName))
         {
-            throw new InvalidDataException("Nodes not in graph. ");
+            Console.WriteLine("Cannot add relation to graph because the graph " + graphName + " hasn't been created");
+            return;
+        }
+
+        var graphToAddTo = graphCollection.NameToGraph[graphName];
+
+        if (!graphToAddTo.StringToNode.ContainsKey(startNodeName))
+        {
+            Console.WriteLine("Unable to add relation to graph because " + startNodeName + " doesn't exist in the graph.");
+            return;
+        }
+        
+        if (!graphToAddTo.StringToNode.ContainsKey(endNodeName))
+        {
+            Console.WriteLine("Unable to add relation to graph because " + endNodeName + " doesn't exist in the graph.");
+            return;
         }
         
         graphToAddTo.AddDirectedRelation(startNodeName, endNodeName, relationName);
     }
 
-    private static void GetNodesWithProperty(GraphCollection graphCollection, string graphName, List<string> properties)
+    private static void GetNodesWithPropertiesAndRelations(GraphCollection graphCollection, string graphName, List<string> properties)
     {
-        var graphToQuery = graphCollection.NameToGraph[graphName];
+        if (!graphCollection.NameToGraph.ContainsKey(graphName))
+        {
+            Console.WriteLine("Unable to query property because " + graphName + " has not been created yet.");
+        }
         
+        var graphToQuery = graphCollection.NameToGraph[graphName];
+
+        var nodesWithProps = graphToQuery.GetNodesWithProperties(properties);
+
+        foreach (var node in nodesWithProps)
+        {
+            Console.WriteLine("Node: " + node);
+        }
     }
 }

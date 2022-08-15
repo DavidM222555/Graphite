@@ -3,7 +3,7 @@ using Graphite.GraphUtils;
 using Graphite.ProgramUtils;
 
 
-// ProgramRunner.Run();
+ProgramRunner.Run();
 
 var graph = new Graph("People");
 graph.AddNodeFromString("Dave");
