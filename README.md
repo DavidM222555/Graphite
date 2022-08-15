@@ -5,7 +5,7 @@ that have certain properties and relationships to other nodes.
 
 ## Query Syntax
 ### Create a graph
-CREATE \<graphname\>
+CREATE \<graphname1\>,\<graphname2\>,...
 
 ### Add a node to a graph
 ADD \<node\> IN \<graphname\>
