@@ -20,4 +20,5 @@ RELATE \<node1\> TO \<node2\> WITH \<relationship\> IN \<graphname\>
 GET NODES WITH PROPS \<prop1\>,\<prop2\>,... IN \<graphname\>
 
 ## Future Work
-Allow for the creation of type based properties, such as integer properties, that can then be tested quantiatively instead of just qualitatively (for example, get all people in a graph that are above a certain height).
+- Allow for the creation of type based properties, such as integer properties, that can then be tested quantitatively instead of just qualitatively (for example, get all people in a graph that are above a certain height).
+- Allow for certain operations to join two graphs that meet certain conditions. Consider the following example, we have two graphs, one is a graph of students and another is a group of workers, and now we want to create a graph that consists of student workers (thus we find all nodes that can be found in both graphs and create a new graph with all those nodes).
