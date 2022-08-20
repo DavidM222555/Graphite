@@ -1,8 +1,5 @@
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using Graphite.GraphCollectionUtils;
 using Graphite.GraphUtils;
 using NUnit.Framework;
@@ -218,6 +215,94 @@ public class Tests
         Assert.AreEqual(1, nodesWithProperties.Count);
         Assert.AreEqual("TestNode1", nodesWithProperties[0]);
     }
+
+    [Test]
+    public void RemoveNodeWithPropertyTest()
+    {
+        var graph = new Graph("TestGraph");
+           
+        graph.AddNodeFromString("TestNode1");
+        graph.AddNodeFromString("TestNode2");
+        graph.AddNodeFromString("TestNode3");
+
+        // Give test node 1 and test node 3 the same property
+        graph.AddPropertyToNode("TestNode1", "TestProp1");
+        graph.AddPropertyToNode("TestNode2", "TestProp2");
+        graph.AddPropertyToNode("TestNode3", "TestProp1");
+
+        graph.RemoveNodesWithProperty("TestProp1");
+        
+        // Check that the graph only has one node and that that node is equal to test node 2
+        Assert.AreEqual(1, graph.NodesInGraph.Count);
+        Assert.AreEqual(1, graph.StringToNode.Count);
+        Assert.AreEqual("TestNode2", graph.NodesInGraph[0].NodeName);
+    }
+    
+    [Test]
+    public void RemoveNodesWithProperties()
+    {
+        var graph = new Graph("TestGraph");
+        
+        graph.AddNodeFromString("TestNode1");
+        graph.AddNodeFromString("TestNode2");
+        graph.AddNodeFromString("TestNode3");
+        graph.AddNodeFromString("TestNode4");
+
+        // Give test node 1 and test node 3 the same property
+        graph.AddPropertyToNode("TestNode1", "TestProp1");
+        graph.AddPropertyToNode("TestNode2", "TestProp2");
+        graph.AddPropertyToNode("TestNode3", "TestProp1");
+        graph.AddPropertyToNode("TestNode4", "TestProp3");
+
+        var propsToRemove = new List<string>
+        {
+            "TestProp1",
+            "TestProp2",
+        };
+        
+        graph.RemoveNodesWithProperties(propsToRemove);
+        
+        Assert.AreEqual(1, graph.NodesInGraph.Count);
+        Assert.AreEqual(1, graph.StringToNode.Count);
+        Assert.AreEqual("TestNode4", graph.NodesInGraph[0].NodeName);
+    }
+
+    [Test]
+    public void RemoveNodeWithName()
+    {
+        var graph = new Graph("TestGraph");
+        
+        graph.AddNodeFromString("TestNode1");
+        graph.AddNodeFromString("TestNode2");
+        
+        graph.RemoveNodeWithName("TestNode1");
+        
+        Assert.AreEqual(1, graph.NodesInGraph.Count);
+        Assert.AreEqual("TestNode2", graph.NodesInGraph[0].NodeName);
+        Assert.AreEqual(1, graph.StringToNode.Count);
+    }
+
+    [Test]
+    public void RemoveNodesWithNames()
+    {
+        var graph = new Graph("TestGraph");
+        
+        graph.AddNodeFromString("TestNode1");
+        graph.AddNodeFromString("TestNode2");
+        graph.AddNodeFromString("TestNode3");
+
+        var listOfNodeNames = new List<string>()
+        {
+            "TestNode1",
+            "TestNode2"
+        };
+
+        graph.RemoveNodesWithNames(listOfNodeNames);
+        
+        Assert.AreEqual(1, graph.NodesInGraph.Count);
+        Assert.AreEqual(1, graph.StringToNode.Count);
+        Assert.AreEqual("TestNode3", graph.NodesInGraph[0].NodeName);
+    }
     
     [Test]
     public void SingleGraphFileWriteAndRead()
@@ -242,7 +327,6 @@ public class Tests
         {
             Assert.True(testGraphFromRead.NodesInGraph.Exists(s => s.NodeName == node.NodeName));
         }
-        
     }
-    
+
 }

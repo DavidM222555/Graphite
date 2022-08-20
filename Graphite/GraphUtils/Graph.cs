@@ -211,4 +211,42 @@ public class Graph
         
         return nodesWithProperties;
     }
+
+    public void RemoveNodeWithName(string nodeName)
+    {
+        if (!StringToNode.ContainsKey(nodeName))
+        {
+            return;
+        }
+        
+        NodesInGraph.Remove(StringToNode[nodeName]);
+        StringToNode.Remove(nodeName);
+    }
+
+    public void RemoveNodesWithNames(List<string> nodeNames)
+    {
+        foreach (var nodeName in nodeNames)
+        {
+            RemoveNodeWithName(nodeName);
+        }
+    }
+    
+    public void RemoveNodesWithProperty(string property)
+    {
+        var nodesWithProperty = GetNodesWithProperty(property);
+        NodesInGraph.RemoveAll(s => nodesWithProperty.Contains(s.NodeName));
+
+        foreach (var nodeName in nodesWithProperty)
+        {
+            StringToNode.Remove(nodeName);
+        }
+    }
+
+    public void RemoveNodesWithProperties(List<string> properties)
+    {
+        foreach (var property in properties)
+        {
+            RemoveNodesWithProperty(property);
+        }
+    }
 }
